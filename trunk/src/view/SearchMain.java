@@ -19,16 +19,15 @@ import controller.heuristic.strategies.Manhattan;
 public final class SearchMain {
 
 	public static void main(String[] args) {
-		StopWatch sw = new StopWatch();
 		
 		Controller c = Controller.getInstance();
 
+		// 1. Set up a search
 		Algorithm aStarOne = new AStarAlgorithm(new Manhattan());
 		Algorithm aStarTwo = new AStarAlgorithm(new Infinity());
 		Algorithm dfs = new DFSAlgorithm();
 		Algorithm bfs = new BFSAlgorithm();
 
-		// 1. Set up a search
 		c.setUp(30, 15, aStarOne);
 //		c.setUp(30, 15, aStarTwo);
 //		c.setUp(30, 15, bfs);
@@ -40,17 +39,17 @@ public final class SearchMain {
 
 		// 3. Add some obstacles
 		c.addObstacle(1, 1, 11, 5);
-		c.addObstacle(13, 2, 13, 10);
-//		c.addObstacle(13, 4, 5, 4);
-		c.addObstacle(13, 10, 5, 10);
-		c.addObstacle(17, 4, 17, 10);
+		c.addObstacle(5, 10, 13, 10);
+		c.addObstacle(13, 10, 13, 2);
+		c.addObstacle(25, 10, 17, 10);
+		c.addObstacle(17, 10, 17, 4);
 		c.addObstacle(17, 4, 25, 4);
-		c.addObstacle(17, 10, 25, 10);
 		c.addObstacle(14, 14);
 		c.addObstacle(15, 11);
 		c.addObstacle(22, 6);
 
 		// 4. Execute the search
+		StopWatch sw = new StopWatch();
 		sw.start();
 		c.executeSearch();
 		sw.stop();
