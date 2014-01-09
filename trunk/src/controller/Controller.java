@@ -267,11 +267,6 @@ public final class Controller {
 		private Node finish = null;
 
 		/**
-		 * The type of search algorithm being used to search (e.g., A*, DFS, BFS, etc.).
-		 */
-		private AlgorithmType type;
-
-		/**
 		 * The collection of obstacle nodes. <code>obstacleNodes</code> is initially empty, and is
 		 * only populated by the {@link #addObstacle(int, int, int, int)} method.
 		 */
@@ -292,16 +287,9 @@ public final class Controller {
 		private SearchArea(int width, int height, AlgorithmType type) {
 			this.width = width;
 			this.height = height;
-			this.type = type;
 			this.obstacleNodes = new HashSet<>();
 
-			initialize();
-		}
-
-		/**
-		 * Generate the search area.
-		 */
-		private void initialize() {
+			// Generate the search area
 			searchAreaArray = new ArrayList<ArrayList<Node>>(width);
 			Node aNode;
 
@@ -311,7 +299,7 @@ public final class Controller {
 					aNode = NodeFactory.buildNode(x, y, type);
 					searchAreaArray.get(x).add(aNode);
 				}
-			}
+			}			
 		}
 
 		/**
@@ -640,7 +628,7 @@ public final class Controller {
 		 * @return The type of the algorithm.
 		 */
 		public AlgorithmType getType() {
-			return type;
+			return algorithm.getType();
 		}
 
 		/**
@@ -857,7 +845,9 @@ public final class Controller {
 			return sb.toString();
 		}
 
-		// Some values for use in the {@link #print()} method:
+		/*
+		 * Some values for use in the print() method:
+		 */
 
 		// ┌
 		private static final String TOP_LEFT_CORNER = "\u250C";
