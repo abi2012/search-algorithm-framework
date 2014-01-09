@@ -30,17 +30,29 @@ public class StopWatch {
 	private long stopTime = 0;
 	private boolean running = false;
 
+	/**
+	 * Start the stop watch. The stop watch will not stop until the {@link #stop()} method is
+	 * invoked.
+	 */
 	public void start() {
 		this.startTime = System.currentTimeMillis();
 		this.running = true;
 	}
 
+	/**
+	 * Stop the stop watch.
+	 */
 	public void stop() {
 		this.stopTime = System.currentTimeMillis();
 		this.running = false;
 	}
 
-	// elaspsed time in milliseconds
+	/**
+	 * Gets the elapsed time, expressed in milliseconds.
+	 * 
+	 * @return If the stop watch is running, then return the time elapsed so far. If the stop watch
+	 *         is stopped, then return the difference between the start time and the stop time.
+	 */
 	public long getElapsedTime() {
 		long elapsed;
 		if (running) {
@@ -51,14 +63,13 @@ public class StopWatch {
 		return elapsed;
 	}
 
-	// elaspsed time in seconds
+	/**
+	 * Gets the elapsed time, expressed in seconds.
+	 * 
+	 * @return If the stop watch is running, then return the time elapsed so far. If the stop watch
+	 *         is stopped, then return the difference between the start time and the stop time.
+	 */
 	public long getElapsedTimeSecs() {
-		long elapsed;
-		if (running) {
-			elapsed = ((System.currentTimeMillis() - startTime) / 1000);
-		} else {
-			elapsed = ((stopTime - startTime) / 1000);
-		}
-		return elapsed;
+		return getElapsedTime() / 1000;
 	}
 }
