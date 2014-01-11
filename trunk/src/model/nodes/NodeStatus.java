@@ -1,5 +1,7 @@
 package model.nodes;
 
+import model.Direction;
+
 /**
  * The status of a node. A node may only be one of the following:
  * <ul>
@@ -116,5 +118,16 @@ public enum NodeStatus {
 	 */
 	public final String getSymbol() {
 		return symbol;
+	}
+
+	/**
+	 * Gets the directed waypoint NodeStatus associated with a particular direction.
+	 * 
+	 * @param d
+	 *            the d
+	 * @return the directed waypoint
+	 */
+	public static final NodeStatus getDirectedWaypoint(Direction d) {
+		return NodeStatus.valueOf("WAYPOINT_" + d.getAbbreviation());
 	}
 }
