@@ -38,6 +38,8 @@ public final class Controller {
 	 */
 	private SearchArea searchArea;
 
+	private boolean cuttingCornersAllowed = false;
+
 	/**
 	 * Create a singleton Controller.
 	 */
@@ -163,7 +165,7 @@ public final class Controller {
 	 * @return <code><b>true</b></code> if the algorithm successfully executed<br>
 	 *         <code><b>false</b></code> otherwise
 	 */
-	public boolean executeSearch() {
+	public boolean executeSearch(boolean cuttingCornersAllowed) {
 		if (algorithm == null || searchArea == null) {
 			System.err.println("Something is wrong.");
 			// TODO need to throw some sort of exception here
@@ -171,6 +173,7 @@ public final class Controller {
 		}
 
 		if (searchArea.hasStart() && searchArea.hasFinish()) {
+			this.cuttingCornersAllowed = cuttingCornersAllowed;
 			return algorithm.execute() != null;
 		}
 
@@ -226,6 +229,10 @@ public final class Controller {
 		return searchArea;
 	}
 
+	public boolean isCuttingCornersAllowed() {
+		return this.cuttingCornersAllowed;
+	}
+
 	/**
 	 * An area to be searched by some search algorithm.
 	 * <p>
@@ -277,6 +284,10 @@ public final class Controller {
 		 * initially 'empty' (i.e., not any of the following: start location, finish location, or
 		 * obstacle.
 		 * 
+		 * <p>
+		 * The constructor is <code>private</code> to ensure a SearchArea can only be instantiated
+		 * from within Controller.
+		 * 
 		 * @param width
 		 *            The number of nodes in the 'x' dimension.
 		 * @param height
@@ -299,7 +310,7 @@ public final class Controller {
 					aNode = NodeFactory.buildNode(x, y, type);
 					searchAreaArray.get(x).add(aNode);
 				}
-			}			
+			}
 		}
 
 		/**
@@ -421,7 +432,7 @@ public final class Controller {
 		}
 
 		/**
-		 * Checks whether or not a coordinate is in the search area.
+		 * Helper method to check whether or not a coordinate is in the search area.
 		 * 
 		 * @param x
 		 *            The <code>x</code> coordinate.
@@ -431,7 +442,7 @@ public final class Controller {
 		 *         the search area<br>
 		 *         <code><b>false</b></code> otherwise
 		 */
-		public boolean coordInSearchArea(int x, int y) {
+		private boolean coordInSearchArea(int x, int y) {
 			if (x < 0 || x >= width || y < 0 || y >= height) {
 				return false;
 			}
@@ -440,7 +451,7 @@ public final class Controller {
 		}
 
 		/**
-		 * Checks whether or not a point is in the search area.
+		 * Helper method to check whether or not a point is in the search area.
 		 * 
 		 * @param p
 		 *            A Point representing an <code>(x, y)</code> coordinate
@@ -448,7 +459,7 @@ public final class Controller {
 		 *         the search area<br>
 		 *         <code><b>false</b></code> otherwise
 		 */
-		public boolean coordInSearchArea(Point p) {
+		private boolean coordInSearchArea(Point p) {
 			return coordInSearchArea(p.x, p.y);
 		}
 
@@ -632,7 +643,7 @@ public final class Controller {
 		}
 
 		/**
-		 * Gets the neighbors of a node, excluding obstacle nodes.
+		 * Gets the neighbors of a node, <i>excluding</i> obstacle nodes.
 		 * 
 		 * @param aNode
 		 *            The node for which a collection of neighbor nodes is requested.
@@ -704,54 +715,32 @@ public final class Controller {
 		public Map<Direction, Node> getWalkableNeighbors(Node aNode, boolean cuttingCornersAllowed) {
 			Map<Direction, Node> walkableNeighbors = getNeighbors(aNode);
 
-			if (cuttingCornersAllowed) {
-
-				// no traversing through diagonal walls...
-				if (walkableNeighbors.containsKey(Direction.NORTHEAST)) {
-					if (!walkableNeighbors.containsKey(Direction.NORTH) &&
-							!walkableNeighbors.containsKey(Direction.EAST))
-						walkableNeighbors.remove(Direction.NORTHEAST);
-				}
-				if (walkableNeighbors.containsKey(Direction.SOUTHEAST)) {
-					if (!walkableNeighbors.containsKey(Direction.SOUTH) &&
-							!walkableNeighbors.containsKey(Direction.EAST))
-						walkableNeighbors.remove(Direction.SOUTHEAST);
-				}
-				if (walkableNeighbors.containsKey(Direction.SOUTHWEST)) {
-					if (!walkableNeighbors.containsKey(Direction.SOUTH) &&
-							!walkableNeighbors.containsKey(Direction.WEST))
-						walkableNeighbors.remove(Direction.SOUTHWEST);
-				}
-				if (walkableNeighbors.containsKey(Direction.NORTHWEST)) {
-					if (!walkableNeighbors.containsKey(Direction.NORTH) &&
-							!walkableNeighbors.containsKey(Direction.WEST))
-						walkableNeighbors.remove(Direction.NORTHWEST);
-				}
-			} else {
-
-				if (walkableNeighbors.containsKey(Direction.NORTHEAST)) {
-					if (!walkableNeighbors.containsKey(Direction.NORTH) ||
-							!walkableNeighbors.containsKey(Direction.EAST))
-						walkableNeighbors.remove(Direction.NORTHEAST);
-				}
-				if (walkableNeighbors.containsKey(Direction.SOUTHEAST)) {
-					if (!walkableNeighbors.containsKey(Direction.SOUTH) ||
-							!walkableNeighbors.containsKey(Direction.EAST))
-						walkableNeighbors.remove(Direction.SOUTHEAST);
-				}
-				if (walkableNeighbors.containsKey(Direction.SOUTHWEST)) {
-					if (!walkableNeighbors.containsKey(Direction.SOUTH) ||
-							!walkableNeighbors.containsKey(Direction.WEST))
-						walkableNeighbors.remove(Direction.SOUTHWEST);
-				}
-				if (walkableNeighbors.containsKey(Direction.NORTHWEST)) {
-					if (!walkableNeighbors.containsKey(Direction.NORTH) ||
-							!walkableNeighbors.containsKey(Direction.WEST))
-						walkableNeighbors.remove(Direction.NORTHWEST);
-				}
-			}
+			trimDiagonal(walkableNeighbors, Direction.NORTHEAST, cuttingCornersAllowed);
+			trimDiagonal(walkableNeighbors, Direction.SOUTHEAST, cuttingCornersAllowed);
+			trimDiagonal(walkableNeighbors, Direction.SOUTHWEST, cuttingCornersAllowed);
+			trimDiagonal(walkableNeighbors, Direction.NORTHWEST, cuttingCornersAllowed);
 
 			return walkableNeighbors;
+		}
+
+		private final void trimDiagonal(Map<Direction, Node> walkableNeighbors, Direction d,
+				boolean cuttingCornersAllowed) {
+
+			/* Both conditions prevent walking diagonally through walls */
+			if (cuttingCornersAllowed) {
+				if (walkableNeighbors.containsKey(d)) {
+					if (!walkableNeighbors.containsKey(d.adjacentDirectionCCW()) &&
+							!walkableNeighbors.containsKey(d.adjacentDirectionCW()))
+						walkableNeighbors.remove(d);
+				}
+			} else {
+				if (walkableNeighbors.containsKey(d)) {
+					if (!walkableNeighbors.containsKey(d.adjacentDirectionCCW()) ||
+							!walkableNeighbors.containsKey(d.adjacentDirectionCW()))
+						walkableNeighbors.remove(d);
+				}
+			}
+			return;
 		}
 
 		/**
