@@ -81,7 +81,8 @@ public final class AStarAlgorithm extends Algorithm {
 			moveToClosedList(currentNode);
 
 			Map<Direction, Node> walkableNeighbors =
-					getSearchArea().getWalkableNeighbors(currentNode, false);
+					getSearchArea().getWalkableNeighbors(currentNode,
+							controller.isCuttingCornersAllowed());
 
 			AStarNode neighbor;
 			double tempCostFromStart;

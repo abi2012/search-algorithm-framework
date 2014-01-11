@@ -10,8 +10,8 @@ import controller.algorithm.Algorithm;
 import controller.algorithm.AlgorithmType;
 
 /**
- * This class is an implementation of the depth-first search algorithm. It
- * operates on a 2-D grid (search area).
+ * This class is an implementation of the depth-first search algorithm. It operates on a 2-D grid
+ * (search area).
  * 
  * @author Ken Norman
  * 
@@ -25,9 +25,9 @@ public final class DFSAlgorithm extends Algorithm {
 		super(AlgorithmType.DFS);
 	}
 
-/**
- * Executes the depth-first search algorithm.
- */
+	/**
+	 * Executes the depth-first search algorithm.
+	 */
 	@Override
 	public List<Node> execute() {
 		if (getSearchArea() == null) {
@@ -43,7 +43,9 @@ public final class DFSAlgorithm extends Algorithm {
 
 	/**
 	 * Recursive implementation of depth-first search.
+	 * 
 	 * @param aNode
+	 *            The next node in the recursion from which to initiate a DFS.
 	 */
 	private void execute(DFSNode aNode) {
 		aNode.setVisited(true);
@@ -53,29 +55,14 @@ public final class DFSAlgorithm extends Algorithm {
 		} else {
 
 			Map<Direction, Node> walkableNeighbors =
-					getSearchArea().getWalkableNeighbors(aNode, false);
+					getSearchArea().getWalkableNeighbors(aNode,
+							controller.isCuttingCornersAllowed());
 
 			// no crossing diagonally over the path that has already been traversed.
-			if (walkableNeighbors.containsKey(Direction.NORTHEAST)) {
-				if (((DFSNode) walkableNeighbors.get(Direction.NORTH)).isVisited()
-						&& ((DFSNode) walkableNeighbors.get(Direction.EAST)).isVisited())
-					walkableNeighbors.remove(Direction.NORTHEAST);
-			}
-			if (walkableNeighbors.containsKey(Direction.SOUTHEAST)) {
-				if (((DFSNode) walkableNeighbors.get(Direction.SOUTH)).isVisited()
-						&& ((DFSNode) walkableNeighbors.get(Direction.EAST)).isVisited())
-					walkableNeighbors.remove(Direction.SOUTHEAST);
-			}
-			if (walkableNeighbors.containsKey(Direction.SOUTHWEST)) {
-				if (((DFSNode) walkableNeighbors.get(Direction.SOUTH)).isVisited()
-						&& ((DFSNode) walkableNeighbors.get(Direction.WEST)).isVisited())
-					walkableNeighbors.remove(Direction.SOUTHWEST);
-			}
-			if (walkableNeighbors.containsKey(Direction.NORTHWEST)) {
-				if (((DFSNode) walkableNeighbors.get(Direction.NORTH)).isVisited()
-						&& ((DFSNode) walkableNeighbors.get(Direction.WEST)).isVisited())
-					walkableNeighbors.remove(Direction.NORTHWEST);
-			}
+			trimDiagonal(walkableNeighbors, Direction.NORTHEAST, controller.isCuttingCornersAllowed());
+			trimDiagonal(walkableNeighbors, Direction.SOUTHEAST, controller.isCuttingCornersAllowed());
+			trimDiagonal(walkableNeighbors, Direction.SOUTHWEST, controller.isCuttingCornersAllowed());
+			trimDiagonal(walkableNeighbors, Direction.NORTHWEST, controller.isCuttingCornersAllowed());
 			// end "no crossing..."
 
 			DFSNode neighbor;
@@ -90,5 +77,30 @@ public final class DFSAlgorithm extends Algorithm {
 			}
 			return; // finish never found
 		}
+	}
+
+	/**
+	 * Removes from consideration a diagonally adjacent node if the current node and the adjacent
+	 * node are both adjacent to the same two previously-visited nodes. This has the effect of
+	 * preventing the solution path from crossing over itself.
+	 * 
+	 * @param walkableNeighbors
+	 *            The walkable neighbors around a node.
+	 * @param d
+	 *            The direction to the node which is to be inspected.
+	 * @param cuttingCornersAllowed
+	 *            The flag which indicates whether or not cutting corners is allowed.
+	 */
+	private final void trimDiagonal(Map<Direction, Node> walkableNeighbors, Direction d,
+			boolean cuttingCornersAllowed) {
+
+		if (walkableNeighbors.containsKey(d)) {
+			DFSNode ccwNode = (DFSNode) walkableNeighbors.get(d.adjacentDirectionCCW());
+			DFSNode cwNode = (DFSNode) walkableNeighbors.get(d.adjacentDirectionCW());
+
+			if (ccwNode != null && cwNode != null && ccwNode.isVisited() && cwNode.isVisited())
+				walkableNeighbors.remove(d);
+		}
+		return;
 	}
 }

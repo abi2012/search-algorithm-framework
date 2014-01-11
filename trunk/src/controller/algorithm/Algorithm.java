@@ -2,7 +2,6 @@ package controller.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import model.Direction;
 import model.nodes.Node;
@@ -79,58 +78,28 @@ public abstract class Algorithm {
 	 *         node.
 	 */
 	protected final List<Node> buildSolutionPath() {
-		Node current = getSearchArea().getFinish();
+		Node currentNode = getSearchArea().getFinish();
 
-		if (!current.hasParent()) { // i.e., the finish node was never found
+		if (!currentNode.hasParent()) { // i.e., the finish node was never found
 			return null;
 		}
 
-		Node parent;
+		Node parentNode;
 
 		List<Node> path = new ArrayList<>();
-		Map<Direction, Node> neighbors;
-		while (!current.isStart()) {
-			path.add(0, current);
-			parent = current.getParent();
+		while (!currentNode.isStart()) {
+			path.add(0, currentNode);
+			parentNode = currentNode.getParent();
 
-			neighbors = getSearchArea().getNeighbors(current);
+			int parentXOffset = parentNode.getX() - currentNode.getX();
+			int parentYOffset = parentNode.getY() - currentNode.getY();
+			Direction dirToCurrent = Direction.fromOffset(-parentXOffset, -parentYOffset);
 
-			/*
-			 * This loop determines which symbol to display for a particular node on the solution
-			 * path
-			 */
-			for (Direction dir : neighbors.keySet()) {
-				if (parent == neighbors.get(dir) && !parent.isStart()) {
-
-					switch (dir) {
-					case NORTH:
-						parent.setStatus(NodeStatus.WAYPOINT_S);
-						break;
-					case NORTHEAST:
-						parent.setStatus(NodeStatus.WAYPOINT_SW);
-						break;
-					case EAST:
-						parent.setStatus(NodeStatus.WAYPOINT_W);
-						break;
-					case SOUTHEAST:
-						parent.setStatus(NodeStatus.WAYPOINT_NW);
-						break;
-					case SOUTH:
-						parent.setStatus(NodeStatus.WAYPOINT_N);
-						break;
-					case SOUTHWEST:
-						parent.setStatus(NodeStatus.WAYPOINT_NE);
-						break;
-					case WEST:
-						parent.setStatus(NodeStatus.WAYPOINT_E);
-						break;
-					case NORTHWEST:
-						parent.setStatus(NodeStatus.WAYPOINT_SE);
-						break;
-					}
-				}
+			if (dirToCurrent != null && !parentNode.isStart()) {
+				parentNode.setStatus(NodeStatus.getDirectedWaypoint(dirToCurrent));
 			}
-			current = parent;
+
+			currentNode = parentNode;
 		}
 
 		return path;

@@ -12,8 +12,8 @@ import controller.algorithm.Algorithm;
 import controller.algorithm.AlgorithmType;
 
 /**
- * This class is an implementation of the breadth-first search algorithm. It
- * operates on a 2-D grid (search area).
+ * This class is an implementation of the breadth-first search algorithm. It operates on a 2-D grid
+ * (search area).
  * 
  * @author Ken Norman
  * 
@@ -51,7 +51,8 @@ public final class BFSAlgorithm extends Algorithm {
 				return buildSolutionPath();
 
 			Map<Direction, Node> walkableNeighbors =
-					getSearchArea().getWalkableNeighbors(currentNode, false);
+					getSearchArea().getWalkableNeighbors(currentNode,
+							controller.isCuttingCornersAllowed());
 
 			BFSNode neighbor;
 			for (Direction dir : walkableNeighbors.keySet()) {

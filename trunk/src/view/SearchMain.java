@@ -28,10 +28,10 @@ public final class SearchMain {
 		Algorithm dfs = new DFSAlgorithm();
 		Algorithm bfs = new BFSAlgorithm();
 
-		c.setUp(30, 15, aStarOne);
+//		c.setUp(30, 15, aStarOne);
 //		c.setUp(30, 15, aStarTwo);
 //		c.setUp(30, 15, bfs);
-//		c.setUp(30, 15, dfs);
+		c.setUp(30, 15, dfs);
 
 		// 2. Set start and finish locations
 		c.setStart(8, 5);
@@ -51,7 +51,7 @@ public final class SearchMain {
 		// 4. Execute the search
 		StopWatch sw = new StopWatch();
 		sw.start();
-		c.executeSearch();
+		c.executeSearch(true);
 		sw.stop();
 
 		// 5. Display the result
