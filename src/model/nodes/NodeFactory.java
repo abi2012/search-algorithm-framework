@@ -1,6 +1,6 @@
 package model.nodes;
 
-import controller.algorithm.AlgorithmType;
+import controller.algorithm.Algorithm.AlgorithmType;
 
 /**
  * A factory for creating nodes according to the type of algorithm being used.

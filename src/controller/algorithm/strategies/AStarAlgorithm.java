@@ -12,7 +12,6 @@ import model.Direction;
 import model.nodes.AStarNode;
 import model.nodes.Node;
 import controller.algorithm.Algorithm;
-import controller.algorithm.AlgorithmType;
 import controller.heuristic.Heuristic;
 
 /**
@@ -58,6 +57,7 @@ public final class AStarAlgorithm extends Algorithm {
 	 */
 	public List<Node> execute() {
 		if (getSearchArea() == null || heuristic == null) {
+			// TODO throw an exception instead
 			return null;
 		}
 

@@ -7,7 +7,6 @@ import model.Direction;
 import model.nodes.DFSNode;
 import model.nodes.Node;
 import controller.algorithm.Algorithm;
-import controller.algorithm.AlgorithmType;
 
 /**
  * This class is an implementation of the depth-first search algorithm. It operates on a 2-D grid

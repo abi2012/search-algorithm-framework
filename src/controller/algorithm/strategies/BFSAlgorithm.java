@@ -9,7 +9,6 @@ import model.Direction;
 import model.nodes.BFSNode;
 import model.nodes.Node;
 import controller.algorithm.Algorithm;
-import controller.algorithm.AlgorithmType;
 
 /**
  * This class is an implementation of the breadth-first search algorithm. It operates on a 2-D grid
@@ -33,6 +32,7 @@ public final class BFSAlgorithm extends Algorithm {
 	@Override
 	public List<Node> execute() {
 		if (getSearchArea() == null) {
+			// TODO throw an exception instead
 			return null;
 		}
 
@@ -65,6 +65,7 @@ public final class BFSAlgorithm extends Algorithm {
 				}
 			}
 		}
+		// TODO throw an exception instead
 		return null; // finish never found
 	}
 
