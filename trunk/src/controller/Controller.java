@@ -12,7 +12,7 @@ import model.nodes.Node;
 import model.nodes.NodeFactory;
 import model.nodes.NodeStatus;
 import controller.algorithm.Algorithm;
-import controller.algorithm.AlgorithmType;
+import controller.algorithm.Algorithm.AlgorithmType;
 
 /**
  * Class used to generate and execute various search algorithms on a 2-dimensional rectangular
