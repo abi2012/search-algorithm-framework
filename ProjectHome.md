@@ -1,0 +1,1 @@
+I developed this project as an exercise to teach myself the A Star search algorithm. However, I wanted a more generic framework to which I could use any search algorithm, so I refactored (and refactored, and refactored...) until I came up with what you see here.
